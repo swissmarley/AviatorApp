@@ -23,6 +23,9 @@ class Recorder {
       log.info('position recording disabled');
       return;
     }
+    // Flights left open by a previous process are closed here; `openFlight` resumes any that
+    // were seen in the last 20 minutes with the same callsign, so a restart does not split flights.
+    query('UPDATE flights SET closed = true WHERE NOT closed').catch((err) => log.warn({ err: (err as Error).message }, 'could not reconcile open flights'));
     store.on((e) => this.onEvent(e));
     this.timer = setInterval(() => this.flush().catch((err) => log.error({ err }, 'position flush failed')), 5000);
     this.flightTimer = setInterval(() => this.updateFlights().catch((err) => log.error({ err }, 'flight update failed')), 30000);

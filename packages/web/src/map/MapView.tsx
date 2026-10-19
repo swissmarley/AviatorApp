@@ -202,7 +202,11 @@ export function MapView(props: MapViewProps) {
     const tick = () => {
       if (!map.getSource('trail')) return;
       const head = layer.interpolated(hex);
-      const pts = props.mode === 'live' ? selectedTrail : (props.trail ?? []);
+      let pts = props.mode === 'live' ? selectedTrail : (props.trail ?? []);
+      // The head is interpolated towards the newest server position, so drop that point from the
+      // drawn trail or the line would run ahead of the icon.
+      const latestTs = props.mode === 'live' ? useAircraft.getState().aircraft.get(hex)?.state.ts : undefined;
+      if (head && latestTs) pts = pts.filter((p) => p.ts < latestTs);
       setTrail(map, trailGeoJson(pts, head ? [head[0], head[1], head[3]] : null, trailLength));
       if (useUi.getState().follow && head) map.easeTo({ center: [head[1], head[0]], duration: 240, easing: (t) => t });
     };

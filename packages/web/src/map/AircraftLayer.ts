@@ -214,6 +214,7 @@ export class AircraftLayer implements CustomLayerInterface {
   pick(x: number, y: number, radius = 16): string | null {
     const map = this.map;
     if (!map) return null;
+    radius = Math.max(8, radius * Math.max(0.42, Math.min(1, 0.3 + map.getZoom() * 0.1)));
     const now = performance.now();
     let best: string | null = null, bestD = radius * radius;
     const b = map.getBounds();
@@ -260,7 +261,10 @@ export class AircraftLayer implements CustomLayerInterface {
     gl.useProgram(this.program);
     gl.uniformMatrix4fv(this.uniforms.u_matrix, false, m);
     gl.uniform1f(this.uniforms.u_now, (performance.now() - this.timeBase) / 1000);
-    gl.uniform1f(this.uniforms.u_size, this.sizePx);
+    // Shrink icons at low zoom so dense world views stay legible; full size from zoom ~7.
+    const z = this.map.getZoom();
+    const zoomScale = Math.max(0.42, Math.min(1, 0.3 + z * 0.1));
+    gl.uniform1f(this.uniforms.u_size, this.sizePx * zoomScale);
     gl.uniform1f(this.uniforms.u_bearing, this.map.getBearing() * Math.PI / 180);
     gl.uniform1f(this.uniforms.u_dpr, window.devicePixelRatio || 1);
     gl.uniform1f(this.uniforms.u_cells, CELLS);

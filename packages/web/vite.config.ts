@@ -19,7 +19,7 @@ export default defineConfig({
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.ts',
-      injectManifest: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], globIgnores: ['cesium/**'], maximumFileSizeToCacheInBytes: 6 * 1024 * 1024 },
+      injectManifest: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], globIgnores: ['cesium/**', '**/cesium-*.js'], maximumFileSizeToCacheInBytes: 6 * 1024 * 1024 },
       manifest: {
         name: 'Contrail — live flight tracking',
         short_name: 'Contrail',

@@ -108,7 +108,11 @@ export class SyntheticAdapter implements FeedAdapter {
         default: return `${L()}${L()}-${L()}${L()}${L()}`;
       }
     };
-    const squawkFor = () => String(Math.floor(rnd() * 8)) + String(Math.floor(rnd() * 8)) + String(Math.floor(rnd() * 8)) + String(Math.floor(rnd() * 8));
+    const squawkFor = () => {
+      let sq: string;
+      do { sq = String(Math.floor(rnd() * 8)) + String(Math.floor(rnd() * 8)) + String(Math.floor(rnd() * 8)) + String(Math.floor(rnd() * 8)); } while (/^7[567]00$/.test(sq) || sq === '0000');
+      return sq;
+    };
     const sourceFor = (): PositionSource => { const r = rnd(); return r < 0.82 ? 'adsb' : r < 0.94 ? 'mlat' : 'tisb'; };
 
     for (let i = 0; i < this.count; i++) {

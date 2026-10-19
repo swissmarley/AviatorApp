@@ -39,7 +39,7 @@ export function SearchBox() {
     <div ref={box} className="relative">
       <div className="panel h-11 flex items-center px-3 gap-2">
         <Icon name="search" size={18} className="text-slate-400 shrink-0" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} onFocus={() => res && setOpen(true)} placeholder="Flight, callsign, registration, airline, airport, type…" className="bg-transparent flex-1 outline-none text-sm placeholder:text-slate-500 min-w-0" aria-label="Search" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} onFocus={() => res && setOpen(true)} placeholder="Search flights, airports, airlines, types…" className="bg-transparent flex-1 outline-none text-sm placeholder:text-slate-500 min-w-0" aria-label="Search" />
         {busy && <span className="w-3 h-3 rounded-full border-2 border-slate-500 border-t-transparent animate-spin" />}
         {q && <button className="text-slate-400 hover:text-white" onClick={() => { setQ(''); setRes(null); }} aria-label="Clear"><Icon name="close" size={16} /></button>}
       </div>

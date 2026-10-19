@@ -170,6 +170,24 @@ export function MapView(props: MapViewProps) {
     layerRef.current.setItems(props.items);
   }, [props.items, props.mode]);
 
+  // --- keep the selected aircraft visible above the mobile bottom sheet
+  useEffect(() => {
+    const map = mapRef.current, layer = layerRef.current;
+    if (!map) return;
+    const mobile = window.matchMedia('(max-width: 767px)').matches;
+    const bottom = props.selectedHex && mobile ? Math.round(window.innerHeight * 0.5) : 0;
+    const left = props.selectedHex && !mobile && props.mode === 'live' ? 400 : 0;
+    map.setPadding({ top: 0, right: 0, bottom, left });
+    if (props.selectedHex && layer) {
+      const retry = (n: number) => {
+        const p = layer.interpolated(props.selectedHex!);
+        if (p) map.easeTo({ center: [p[1], p[0]], duration: 500 });
+        else if (n > 0) setTimeout(() => retry(n - 1), 400);
+      };
+      retry(8);
+    }
+  }, [props.selectedHex, props.mode]);
+
   // --- selection: subscribe to server trail, keep trail drawn with live head, follow
   const selectedTrail = useAircraft((s) => s.selectedTrail);
   useEffect(() => {

@@ -2,6 +2,11 @@ import clsx from 'clsx';
 import { MAP_STYLES } from '@/lib/mapStyles';
 import { useSettings, type LayerKey } from '@/state/settings';
 import { Icon } from './Icon';
+import { useAuth } from '@/state/auth';
+import { useUi } from '@/state/ui';
+import { api } from '@/lib/api';
+import { readMapPos } from '@/lib/url';
+import { useNavigate } from 'react-router-dom';
 
 const LAYERS: { key: LayerKey; label: string; hint?: string }[] = [
   { key: 'airports', label: 'Airports' },
@@ -16,6 +21,18 @@ const LAYERS: { key: LayerKey; label: string; hint?: string }[] = [
 
 export function LayerMenu({ onClose }: { onClose: () => void }) {
   const { settings, layers, update, toggleLayer } = useSettings();
+  const user = useAuth((s) => s.user);
+  const refresh = useAuth((s) => s.refresh);
+  const notify = useUi((s) => s.notify);
+  const navigate = useNavigate();
+  const bookmarkView = async () => {
+    const pos = readMapPos();
+    if (!pos) return;
+    if (!user) { notify('Sign in to bookmark map views'); navigate('/account'); return; }
+    const label = window.prompt('Name this view', `View @ ${pos.lat.toFixed(2)}, ${pos.lon.toFixed(2)}`);
+    if (!label) return;
+    try { await api('/api/me/bookmarks', { method: 'POST', body: JSON.stringify({ kind: 'location', label, data: { lat: pos.lat, lon: pos.lon, zoom: pos.zoom } }) }); await refresh(); notify('View bookmarked', 'success'); } catch (e) { notify((e as Error).message, 'error'); }
+  };
   return (
     <div className="panel w-72 p-3 text-sm" role="dialog" aria-label="Map layers">
       <div className="flex items-center justify-between mb-2"><span className="font-semibold">Map</span><button className="icon-btn w-7 h-7" onClick={onClose} aria-label="Close"><Icon name="close" size={14} /></button></div>
@@ -38,6 +55,7 @@ export function LayerMenu({ onClose }: { onClose: () => void }) {
       </ul>
       <div className="mt-3 text-[11px] uppercase tracking-wide text-slate-400 mb-1">Icons</div>
       <label className="flex items-center gap-2 px-2 text-xs">Size<input type="range" min={0.5} max={2} step={0.1} value={settings.iconSize} onChange={(e) => update({ iconSize: Number(e.target.value) })} className="flex-1 accent-amber-400" /><span className="font-mono w-8 text-right">{settings.iconSize.toFixed(1)}×</span></label>
+      <button className="btn w-full justify-center mt-3 text-xs" onClick={() => void bookmarkView()}><Icon name="bookmark" size={14} />Bookmark this view</button>
       <label className="flex items-center gap-2 px-2 text-xs mt-1">Trail<select value={settings.trailLength} onChange={(e) => update({ trailLength: Number(e.target.value) })} className="input py-1 flex-1"><option value={0}>Whole flight</option><option value={5}>5 min</option><option value={15}>15 min</option><option value={60}>1 hour</option></select></label>
     </div>
   );

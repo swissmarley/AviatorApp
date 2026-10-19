@@ -58,6 +58,8 @@ const GA = ['C172', 'SR22', 'P28A', 'C182', 'DA40', 'BE36', 'PC12', 'TBM9'];
 const BIZ = ['GLF5', 'GLF6', 'C56X', 'CL35', 'E55P', 'FA7X', 'GLEX', 'C25B'];
 const HELI = ['EC35', 'A139', 'R44', 'AS50', 'B06', 'EC45', 'S76'];
 const GLIDERS = ['GLID', 'DISC', 'AS21', 'VENT'];
+/** Major hubs get a larger share of synthetic traffic so boards and rankings look realistic. */
+const HUBS = ['EGLL', 'EGKK', 'EHAM', 'LFPG', 'EDDF', 'EDDM', 'LEMD', 'LEBL', 'LIRF', 'LSZH', 'EKCH', 'LTFM', 'UUEE', 'OMDB', 'OTHH', 'VIDP', 'VABB', 'WSSS', 'VHHH', 'RJTT', 'RJAA', 'RKSI', 'ZBAA', 'ZSPD', 'ZGGG', 'YSSY', 'YMML', 'KJFK', 'KEWR', 'KLAX', 'KSFO', 'KORD', 'KATL', 'KDFW', 'KDEN', 'KMIA', 'KSEA', 'KBOS', 'KIAH', 'KLAS', 'CYYZ', 'CYVR', 'MMMX', 'SBGR', 'SCEL', 'FAOR', 'HAAB', 'HECA', 'GMMN', 'EIDW', 'ENGM', 'ESSA', 'EFHK', 'LOWW', 'EBBR', 'LPPT', 'LGAV', 'EPWA', 'LKPR'];
 
 export class SyntheticAdapter implements FeedAdapter {
   readonly name = 'synthetic';
@@ -71,7 +73,10 @@ export class SyntheticAdapter implements FeedAdapter {
     const rnd = mulberry32(this.seed);
     const majors = reference.airports.filter((a) => a.type === 'large_airport' && a.scheduledService);
     const mediums = reference.airports.filter((a) => a.type === 'medium_airport');
+    const hubs = HUBS.map((c) => reference.airport(c)).filter((a): a is Airport => !!a);
     const pick = <T,>(arr: T[]) => arr[Math.floor(rnd() * arr.length)];
+    /** 55 % of airline legs touch a hub at each end. */
+    const pickAirline = () => (hubs.length && rnd() < 0.55 ? pick(hubs) : pick(majors));
     const airlines = AIRLINES.filter((a) => a.iata && !a.cargo && !/Force|Navy|Mobility|NATO/.test(a.name));
     const cargo = AIRLINES.filter((a) => a.cargo);
     const usedHex = new Set<string>();
@@ -114,8 +119,8 @@ export class SyntheticAdapter implements FeedAdapter {
         let origin: Airport, dest: Airport, d = 0;
         let tries = 0;
         do {
-          origin = pick(kind === 'bizjet' ? (rnd() < 0.5 ? mediums : majors) : majors);
-          dest = pick(kind === 'bizjet' ? (rnd() < 0.5 ? mediums : majors) : majors);
+          origin = kind === 'bizjet' ? pick(rnd() < 0.5 ? mediums : majors) : pickAirline();
+          dest = kind === 'bizjet' ? pick(rnd() < 0.5 ? mediums : majors) : pickAirline();
           d = haversineKm(origin.lat, origin.lon, dest.lat, dest.lon);
           tries++;
         } while ((d < 150 || d > (kind === 'bizjet' ? 4000 : 9500) || origin === dest) && tries < 50);

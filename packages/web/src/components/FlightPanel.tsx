@@ -151,6 +151,11 @@ export function FlightPanel({ hex, onClose, compact }: { hex: string; onClose: (
           <div className="text-[11px] uppercase tracking-wide text-slate-400 mb-1">Altitude & speed — this flight</div>
           <FlightChart points={chartPoints} />
         </div>
+        <div className="p-3 border-b border-line flex flex-wrap gap-2 text-xs">
+          <button className="btn text-xs" onClick={() => navigate(`/history/registration/${live?.reg ?? hex}`)}><Icon name="clock" size={14} />Airframe history</button>
+          {(flightNo ?? live?.callsign) && <button className="btn text-xs" onClick={() => navigate(`/history/flight/${flightNo ?? live?.callsign}`)}><Icon name="clock" size={14} />Route history</button>}
+          {(detail?.origin || detail?.dest) && <button className="btn text-xs" onClick={() => navigate(`/airport/${detail?.dest?.icao ?? detail?.origin?.icao}`)}><Icon name="tower" size={14} />{detail?.dest ? 'Destination airport' : 'Origin airport'}</button>}
+        </div>
         <div className="p-3 text-[10px] text-slate-500">Photo © photographer via Planespotters.net where shown. Schedule data from the configured provider.</div>
       </div>
 

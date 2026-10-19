@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@theme {
+  --color-ink: #0b1220;
+  --color-ink-2: #111a2e;
+  --color-ink-3: #182238;
+  --color-line: #263147;
+  --color-accent: #f5b400;
+  --color-accent-2: #38bdf8;
+  --color-danger: #ef4444;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+:root { color-scheme: dark; }
+html, body, #root { height: 100%; margin: 0; }
+body { font-family: var(--font-sans); overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+
+.panel { @apply bg-ink-2/95 backdrop-blur border border-line rounded-xl shadow-2xl; }
+.btn { @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-ink-3 hover:bg-line text-slate-100 border border-line transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+.btn-primary { @apply bg-accent text-ink border-accent hover:bg-yellow-400; }
+.btn-ghost { @apply bg-transparent border-transparent hover:bg-ink-3; }
+.icon-btn { @apply inline-flex items-center justify-center w-9 h-9 rounded-lg bg-ink-2/90 border border-line hover:bg-ink-3 text-slate-200 backdrop-blur; }
+.input { @apply w-full bg-ink border border-line rounded-lg px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-accent-2; }
+.chip { @apply inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border border-line bg-ink-3 text-slate-200; }
+.kv { @apply flex flex-col gap-0.5; }
+.kv dt { @apply text-[11px] uppercase tracking-wide text-slate-400; }
+.kv dd { @apply text-sm font-medium text-slate-100 font-mono tabular-nums; }
+.scroll-thin { scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+.maplibregl-ctrl-attrib { @apply text-[10px] bg-ink/70! text-slate-300!; }
+.maplibregl-ctrl-attrib a { @apply text-slate-300!; }
+.maplibregl-ctrl-group { @apply bg-ink-2! border! border-line!; }
+.maplibregl-ctrl-group button { @apply bg-ink-2! hover:bg-ink-3!; }
+.maplibregl-ctrl-group button + button { @apply border-t-line!; }
+.maplibregl-ctrl button .maplibregl-ctrl-icon { filter: invert(0.9); }
+.maplibregl-popup-content { @apply bg-ink-2! text-slate-100! border! border-line! rounded-lg! shadow-xl! px-3! py-2! text-xs!; }
+.maplibregl-popup-tip { border-top-color: #111a2e !important; }
+@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.pulse-red { animation: pulse-red 1.2s ease-in-out infinite; }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.cesium-viewer-bottom { display: none !important; }
+.cesium-widget-credits { display: none !important; }

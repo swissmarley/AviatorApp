@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.local
+.env.*.local
+.DS_Store
+coverage/
+packages/server/data/cache/
+packages/web/public/cesium/
+.vite/
+*.tsbuildinfo

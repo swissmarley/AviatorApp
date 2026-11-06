@@ -11,7 +11,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 registerRoute(({ url }) => url.pathname.startsWith('/api/airports') || url.pathname.startsWith('/api/layers') || url.pathname.startsWith('/api/meta'), new StaleWhileRevalidate({ cacheName: 'api-static', plugins: [new ExpirationPlugin({ maxEntries: 200, maxAgeSeconds: 24 * 3600 })] }));
 registerRoute(({ url }) => url.pathname.startsWith('/api/'), new NetworkFirst({ cacheName: 'api-live', networkTimeoutSeconds: 8, plugins: [new ExpirationPlugin({ maxEntries: 100, maxAgeSeconds: 600 })] }));
-registerRoute(({ url }) => /basemaps\.cartocdn\.com|tile\.opentopomap\.org|arcgisonline\.com|api\.maptiler\.com/.test(url.host), new CacheFirst({ cacheName: 'tiles', plugins: [new ExpirationPlugin({ maxEntries: 1500, maxAgeSeconds: 7 * 24 * 3600 })] }));
+registerRoute(({ url }) => /basemaps\.cartocdn\.com|tile\.openstreetmap\.org|tile\.opentopomap\.org|arcgisonline\.com|api\.maptiler\.com/.test(url.host), new CacheFirst({ cacheName: 'tiles', plugins: [new ExpirationPlugin({ maxEntries: 1500, maxAgeSeconds: 7 * 24 * 3600 })] }));
 registerRoute(({ url }) => url.pathname.startsWith('/cesium/'), new CacheFirst({ cacheName: 'cesium', plugins: [new ExpirationPlugin({ maxEntries: 300, maxAgeSeconds: 30 * 24 * 3600 })] }));
 
 self.addEventListener('push', (event) => {

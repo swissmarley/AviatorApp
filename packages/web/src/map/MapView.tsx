@@ -4,6 +4,7 @@ import type { UserSettings } from '@contrail/shared';
 import { AircraftLayer, type LayerItem } from './AircraftLayer';
 import { LabelCanvas, setLabelText, resetLabels, type PointLabel } from './LabelCanvas';
 import { Overlays } from './overlays';
+import { installRasterBasemapFallback } from './rasterFallback';
 import { ensureTrailLayers, setTrail, trailGeoJson } from './trail';
 import { styleFor as mapStyleFor, isLightStyle } from '@/lib/mapStyles';
 import { styleFor as aircraftStyleFor } from '@/lib/aircraftStyle';
@@ -84,6 +85,7 @@ export function MapView(props: MapViewProps) {
       sendView();
     };
     map.on('style.load', installAll);
+    installRasterBasemapFallback(map);
 
     let viewTimer = 0;
     function sendView() {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { styleFor } from '../src/lib/mapStyles';
 import { readMapPos, shareUrl } from '../src/lib/url';
 import { matchesFilter, isFilterActive, EMPTY_FILTER } from '../src/state/filters';
 import { interpolate, type LiveAircraft } from '../src/state/aircraft';
@@ -9,6 +10,20 @@ const state: AircraftState = {
   hex: 'abc123', callsign: 'BAW117', lat: 51, lon: 0, altBaro: 36000, gs: 450, track: 90, onGround: false, emergency: 'none',
   category: 'passenger', military: false, source: 'adsb', feed: 'x', seen: 0, seenPos: 0, ts: 0, operator: 'BAW', flightNo: 'BA117', type: 'A388', origin: 'EGLL', dest: 'KJFK',
 };
+
+describe('map basemaps (no VITE_* keys in test env)', () => {
+  it('defaults dark and light to OpenStreetMap rasters, not anonymous CARTO', () => {
+    const dark = styleFor('dark');
+    const light = styleFor('light');
+    expect(typeof dark).toBe('object');
+    expect(typeof light).toBe('object');
+    if (typeof dark !== 'object' || !('sources' in dark) || !dark.sources) throw new Error('expected spec');
+    const dBase = dark.sources as { base?: { tiles?: string[] } };
+    const lBase = (light as { sources: { base?: { tiles?: string[] } } }).sources;
+    expect(dBase.base?.tiles?.every((u) => u.includes('openstreetmap.org'))).toBe(true);
+    expect(lBase.base?.tiles?.every((u) => u.includes('openstreetmap.org'))).toBe(true);
+  });
+});
 
 describe('url deep links', () => {
   it('parses #map=zoom/lat/lon[/bearing/pitch]', () => {

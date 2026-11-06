@@ -81,7 +81,7 @@ Everything is optional. Each provider's terms are summarised; please read the or
 | Airports, runways, navaids | [OurAirports](https://ourairports.com/data/) | none | `OURAIRPORTS_REFRESH` | Public domain. A filtered copy is bundled; set `true` to refresh at startup. |
 | FIR boundaries | [VATSpy data project](https://github.com/vatsimnetwork/vatspy-data-project) | none | `FIR_GEOJSON_URL` | Bundled simplified copy of `Boundaries.geojson`. |
 | Airways | your own GeoJSON (e.g. exported from [openAIP](https://www.openaip.net/)) | — | `AIRWAYS_GEOJSON_URL` | No free global airway dataset is bundled; the layer renders whatever LineString collection you point it at. |
-| Basemaps | CARTO (dark/light), Esri World Imagery (satellite), OpenTopoMap (terrain) | none | — | Default raster tiles, attribution shown. Set `VITE_MAPTILER_KEY` for MapTiler vector styles. |
+| Basemaps | OpenStreetMap (dark/light default), Esri (satellite), OpenTopoMap (terrain) | none | — | CARTO dark/light need a free `VITE_CARTO_BASEMAP_KEY` (see [CARTO basemaps](https://carto.com/basemaps/apikey)). Optional `VITE_MAPTILER_KEY` for MapTiler vector styles. |
 | 3D terrain & buildings | [Cesium ion](https://ion.cesium.com/) | token (free tier) | `VITE_CESIUM_ION_TOKEN` | Without it the 3D view uses an ellipsoid globe and OSM imagery. |
 | Web push | VAPID keys | `npx web-push generate-vapid-keys` | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | |
 | Email alerts | any SMTP | — | `SMTP_URL`, `SMTP_FROM` | |
